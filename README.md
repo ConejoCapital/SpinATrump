@@ -1,6 +1,6 @@
 # Spin A Trump
 
-A fun and interactive wheel spinning game featuring Trump-themed categories. Built with HTML5 Canvas, CSS3, and vanilla JavaScript.
+A fun and interactive wheel spinning game featuring Trump & Milady themed categories. Built with HTML5 Canvas, CSS3, and vanilla JavaScript.
 
 ## Features
 
