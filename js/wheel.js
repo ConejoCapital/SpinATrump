@@ -18,6 +18,8 @@ const segments = [
 
 let currentRotation = 0;
 let isSpinning = false;
+let currentSpinSpeed = 0;
+let spinBoostCount = 0;
 
 function showTrumpCelebration() {
     trumpPopup.classList.add('active');
@@ -64,21 +66,44 @@ function drawWheel() {
 }
 
 function spin() {
-    if (isSpinning) return;
+    spinBoostCount++;
+    const baseSpeed = 8; // Base number of rotations
+    const speedBoost = Math.min(spinBoostCount * 2, 8); // Max 8 additional rotations
+    const totalRotations = baseSpeed + speedBoost + Math.random() * 4;
     
+    if (!isSpinning) {
+        startNewSpin(totalRotations);
+    } else {
+        boostCurrentSpin(totalRotations);
+    }
+    
+    // Update button text to show boost count
+    spinBtn.textContent = `SPIN FASTER! (${spinBoostCount}x)`;
+}
+
+function startNewSpin(totalRotations) {
     isSpinning = true;
-    spinBtn.disabled = true;
-    resultDiv.textContent = '';
-    
+    spinBoostCount = 1;
     const spinDuration = 5000; // 5 seconds
     const startTime = Date.now();
     const startRotation = currentRotation;
-    const totalRotations = 8 + Math.random() * 4; // Between 8 and 12 rotations
     const endRotation = startRotation + (totalRotations * 2 * Math.PI);
     
-    function animate() {
+    animate(startTime, startRotation, endRotation, spinDuration);
+}
+
+function boostCurrentSpin(additionalRotations) {
+    const currentTime = Date.now();
+    const remainingRotation = additionalRotations * 2 * Math.PI;
+    const boostDuration = 3000; // 3 seconds for boost
+    
+    animate(currentTime, currentRotation, currentRotation + remainingRotation, boostDuration);
+}
+
+function animate(startTime, startRotation, endRotation, duration) {
+    function step() {
         const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / spinDuration, 1);
+        const progress = Math.min(elapsed / duration, 1);
         
         // Easing function for smooth deceleration
         const easeOut = (t) => 1 - Math.pow(1 - t, 3);
@@ -87,10 +112,11 @@ function spin() {
         drawWheel();
         
         if (progress < 1) {
-            requestAnimationFrame(animate);
+            requestAnimationFrame(step);
         } else {
             isSpinning = false;
-            spinBtn.disabled = false;
+            spinBtn.textContent = 'SPIN';
+            spinBoostCount = 0;
             
             // Calculate winner
             const normalizedRotation = currentRotation % (2 * Math.PI);
@@ -107,7 +133,7 @@ function spin() {
         }
     }
     
-    animate();
+    step();
 }
 
 // Initial draw
