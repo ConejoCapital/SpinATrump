@@ -97,11 +97,12 @@ function spin() {
             const segmentAngle = (2 * Math.PI) / segments.length;
             const winningIndex = Math.floor(((2 * Math.PI) - normalizedRotation) / segmentAngle) % segments.length;
             
-            resultDiv.textContent = `Winner: ${segments[winningIndex].text}!`;
-            
-            // Show celebration if Trump wins
-            if (segments[winningIndex].text === 'Trump') {
+            const winner = segments[winningIndex].text;
+            if (winner === 'Trump') {
+                resultDiv.textContent = `Winner: ${winner}!`;
                 showTrumpCelebration();
+            } else {
+                resultDiv.textContent = '🦅 🇺🇸 Spin Again Patriot! 🇺🇸 🦅';
             }
         }
     }
