@@ -14,6 +14,53 @@ function getOrCreateVisitorId() {
     return visitorId;
 }
 
+// Multiplier System
+const SPINS_FOR_MULTIPLIER = 10;
+const HOUR_IN_MS = 3600000; // 1 hour in milliseconds
+
+function getMultiplierData() {
+    const defaultData = {
+        multiplier: 1,
+        lastSpinTime: Date.now(),
+        hoursActive: 0,
+        spinsThisHour: 0
+    };
+    
+    const stored = localStorage.getItem('multiplierData');
+    if (!stored) return defaultData;
+    
+    const data = JSON.parse(stored);
+    const hoursSinceLastSpin = (Date.now() - data.lastSpinTime) / HOUR_IN_MS;
+    
+    // Reset spins count if more than an hour has passed
+    if (hoursSinceLastSpin >= 1) {
+        data.spinsThisHour = 0;
+        data.hoursActive = Math.min(data.hoursActive + Math.floor(hoursSinceLastSpin), 24);
+    }
+    
+    return data;
+}
+
+function updateMultiplier() {
+    const data = getMultiplierData();
+    data.lastSpinTime = Date.now();
+    data.spinsThisHour++;
+    
+    // Check if we've hit the spins threshold for this hour
+    if (data.spinsThisHour >= SPINS_FOR_MULTIPLIER) {
+        data.multiplier = 2 * (1 + data.hoursActive);
+    }
+    
+    localStorage.setItem('multiplierData', JSON.stringify(data));
+    updateMultiplierDisplay(data.multiplier);
+    return data.multiplier;
+}
+
+function updateMultiplierDisplay(multiplier) {
+    const multiplierElement = document.getElementById('current-multiplier');
+    multiplierElement.textContent = `${multiplier}x`;
+}
+
 // Spin Counter Management
 function getSpinCount() {
     return parseInt(localStorage.getItem('spinCount') || '0');
@@ -21,7 +68,10 @@ function getSpinCount() {
 
 function incrementSpinCount() {
     const currentCount = getSpinCount();
-    const newCount = currentCount + 1;
+    const multiplier = updateMultiplier();
+    const pointsToAdd = multiplier;
+    const newCount = currentCount + pointsToAdd;
+    
     localStorage.setItem('spinCount', newCount.toString());
     updateSpinCountDisplay();
     return newCount;
@@ -32,9 +82,10 @@ function updateSpinCountDisplay() {
     spinCountElement.textContent = getSpinCount();
 }
 
-// Set visitor ID on page load
+// Set initial values
 document.getElementById('id-number').textContent = getOrCreateVisitorId();
 updateSpinCountDisplay();
+updateMultiplierDisplay(getMultiplierData().multiplier);
 
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
