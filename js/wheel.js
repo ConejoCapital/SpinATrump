@@ -1,3 +1,22 @@
+// Visitor ID Management
+function generateVisitorId() {
+    const timestamp = Date.now().toString(36);
+    const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `MAGA-${timestamp}-${randomStr}`;
+}
+
+function getOrCreateVisitorId() {
+    let visitorId = localStorage.getItem('visitorId');
+    if (!visitorId) {
+        visitorId = generateVisitorId();
+        localStorage.setItem('visitorId', visitorId);
+    }
+    return visitorId;
+}
+
+// Set visitor ID on page load
+document.getElementById('id-number').textContent = getOrCreateVisitorId();
+
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
 const spinBtn = document.getElementById('spin-btn');
