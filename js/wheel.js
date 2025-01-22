@@ -23,6 +23,23 @@ const spinBtn = document.getElementById('spin-btn');
 const resultDiv = document.getElementById('result');
 const trumpPopup = document.getElementById('trump-popup');
 
+const BURST_EMOJIS = ['🇺🇸', '🎉', '🦅', '🚀', '🎈'];
+
+function createEmojiBurst(x, y) {
+    const emoji = BURST_EMOJIS[Math.floor(Math.random() * BURST_EMOJIS.length)];
+    const burstElement = document.createElement('div');
+    burstElement.className = 'emoji-burst';
+    burstElement.textContent = emoji;
+    burstElement.style.left = `${x}px`;
+    burstElement.style.top = `${y}px`;
+    document.body.appendChild(burstElement);
+    
+    // Remove the element after animation
+    setTimeout(() => {
+        burstElement.remove();
+    }, 1000);
+}
+
 // Wheel segments configuration
 const segments = [
     { text: 'Trump', color: '#FF0000' },
@@ -84,7 +101,13 @@ function drawWheel() {
     ctx.stroke();
 }
 
-function spin() {
+function spin(event) {
+    // Create emoji burst at button location
+    const rect = spinBtn.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    createEmojiBurst(centerX, centerY);
+    
     spinBoostCount++;
     const baseSpeed = 8; // Base number of rotations
     const speedBoost = Math.min(spinBoostCount * 2, 8); // Max 8 additional rotations
