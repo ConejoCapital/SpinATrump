@@ -239,3 +239,57 @@ canvas {
         padding: 0.4rem 0.8rem;
     }
 }
+
+.spin-counter {
+    position: fixed;
+    top: 4rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff0000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid #ff0000;
+}
+
+.counter-label {
+    color: #000;
+}
+
+.giveaway-btn {
+    display: inline-block;
+    background: #ff0000;
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 2rem;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    border: 2px solid white;
+}
+
+.giveaway-btn:hover {
+    transform: scale(1.05);
+    background: #cc0000;
+}
+
+@media (max-width: 480px) {
+    .spin-counter {
+        top: 3.5rem;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .giveaway-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 1.2rem;
+    }
+}

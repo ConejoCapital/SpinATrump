@@ -14,8 +14,27 @@ function getOrCreateVisitorId() {
     return visitorId;
 }
 
+// Spin Counter Management
+function getSpinCount() {
+    return parseInt(localStorage.getItem('spinCount') || '0');
+}
+
+function incrementSpinCount() {
+    const currentCount = getSpinCount();
+    const newCount = currentCount + 1;
+    localStorage.setItem('spinCount', newCount.toString());
+    updateSpinCountDisplay();
+    return newCount;
+}
+
+function updateSpinCountDisplay() {
+    const spinCountElement = document.getElementById('spin-count');
+    spinCountElement.textContent = getSpinCount();
+}
+
 // Set visitor ID on page load
 document.getElementById('id-number').textContent = getOrCreateVisitorId();
+updateSpinCountDisplay();
 
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
@@ -102,6 +121,9 @@ function drawWheel() {
 }
 
 function spin(event) {
+    // Increment spin count
+    const currentSpins = incrementSpinCount();
+    
     // Create emoji burst at button location
     const rect = spinBtn.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
